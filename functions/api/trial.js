@@ -1,7 +1,6 @@
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
 const reply = (status, message) => new Response(JSON.stringify({ ok: status < 400, message }), { status, headers: JSON_HEADERS });
 const clean = (value, limit = 160) => typeof value === 'string' ? value.trim().slice(0, limit) : '';
-const allowedTrades = new Set(['Carpentry / Joinery','Building / Renovations','Plumbing','Electrical','Landscaping','Painting','Cleaning','Other trade / service']);
 
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get('Origin');
@@ -16,7 +15,7 @@ export async function onRequestPost({ request, env }) {
   const name = clean(input.name, 100), business = clean(input.business, 120);
   const mobile = clean(input.mobile, 40), email = clean(input.email, 200).toLowerCase();
   const trade = clean(input.trade, 80);
-  if (!name || !business || !/^\\+?[0-9 ()-]{8,20}$/.test(mobile) || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || !allowedTrades.has(trade)) {
+  if (!name || !business || !/^\\+?[0-9 ()-]{8,20}$/.test(mobile) || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || !trade || trade.length > 80) {
     return reply(400, 'Please complete all fields with valid contact details.');
   }
   const token = clean(input.turnstileToken, 2048);
