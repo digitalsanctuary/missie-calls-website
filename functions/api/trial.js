@@ -11,11 +11,10 @@ export async function onRequestPost({ request, env }) {
   let input;
   try { input = await request.json(); } catch { return reply(400, 'Please check your details and try again.'); }
   if (!input || typeof input !== 'object') return reply(400, 'Invalid form.');
-  if (clean(input.company_website)) return reply(200, 'Thanks. Your request has been received.');
   const name = clean(input.name, 100), business = clean(input.business, 120);
   const mobile = clean(input.mobile, 40), email = clean(input.email, 200).toLowerCase();
   const trade = clean(input.trade, 80);
-  if (!name || !business || !/^\\+?[0-9 ()-]{8,20}$/.test(mobile) || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || !trade || trade.length > 80) {
+  if (!name || !business || !/^\+?[0-9 ()-]{8,20}$/.test(mobile) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !trade || trade.length > 80) {
     return reply(400, 'Please complete all fields with valid contact details.');
   }
   const token = clean(input.turnstileToken, 2048);
